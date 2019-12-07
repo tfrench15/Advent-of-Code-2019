@@ -1,11 +1,9 @@
 
-mod day_two;
+mod day_three;
 
 fn main() {
-    let result = day_two::part_two(19690720);
+    let result = day_three::part_one();
 
-    let ans = result.unwrap();
-
-    println!("{}", ans);
+    println!("{}", result);
 }
 
