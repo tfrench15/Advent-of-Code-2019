@@ -1,9 +1,9 @@
-mod day_three;
+mod day_four;
+const RANGE: (i32, i32) = (284639, 748759);
 
 fn main() {
-    let part_one = day_three::part_one();
-    let part_two = day_three::part_two();
+    let result = day_four::part_one(RANGE);
 
-    println!("part 1: {}, part 2: {}", part_one, part_two);
+    println!("{}", result);
 }
 
