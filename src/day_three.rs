@@ -44,11 +44,38 @@ pub fn part_one() -> i32 {
     minimum
 }
 
+pub fn fastest_intersection(first: &Wire, second: &Wire) -> i32 {
+    let intersections = first.intersects(second);
+    let mut step_counts: Vec<i32> = Vec::new();
+
+    for intersection in intersections {
+        let first_value = first.points.get(intersection).unwrap();
+        let first_steps = first_value.step_counter;
+
+        let second_value = second.points.get(intersection).unwrap();
+        let second_steps = second_value.step_counter;
+
+        let total_steps = *first_steps + *second_steps;
+        step_counts.push(total_steps);
+    }
+
+    let mut minimum = step_counts[0];
+
+    for count in step_counts.iter().skip(1) {
+        if count < minimum {
+            count = minimum;
+        }
+    }
+
+    minimum
+}
+
 // Point represents a point in the plane.
 #[derive(Clone, Copy, Debug, Hash, PartialEq)]
 struct Point {
     x: i32,
     y: i32,
+    step_counter: i32,
 }
 
 impl Point {
@@ -62,6 +89,12 @@ impl Point {
 
     fn manhattan_distance(&self) -> i32 {
         self.x.abs() + self.y.abs()
+    }
+}
+
+impl PartialEq for Point {
+    fn eq(&self, other: &Self) -> bool {
+        self.x == other.x && self.y == other.y
     }
 }
 
@@ -92,6 +125,8 @@ impl Wire {
     }
 
     fn execute_instruction(&mut self, instruction: &Instruction) {
+        self.current.step_counter += 1;
+
         match instruction.direction {
             'L' => {
                 for _i in 0..instruction.distance {
