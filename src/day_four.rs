@@ -1,18 +1,5 @@
 
-pub fn part_one(range: (i32, i32)) -> i32 {
-    let mut counter = 0;
-
-    for num in range.0..=range.1 {
-        let num = num.to_string();
-        if has_double(&num) && is_increasing(&num) {
-            counter += 1;
-        }
-    }
-
-    counter
-}
-
-pub fn part_two(range: (i32, i32)) -> i32 {
+pub fn solution(range: (i32, i32)) -> i32 {
     let mut counter = 0;
 
     for num in range.0..=range.1 {
@@ -47,7 +34,7 @@ fn has_double(num: &str) -> bool {
     }
 
     digit_matches.push(in_a_row_count);
-    
+
     digit_matches.contains(&2)
 }
 
