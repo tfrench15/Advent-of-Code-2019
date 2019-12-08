@@ -44,38 +44,52 @@ pub fn part_one() -> i32 {
     minimum
 }
 
-pub fn fastest_intersection(first: &Wire, second: &Wire) -> i32 {
-    let intersections = first.intersects(second);
-    let mut step_counts: Vec<i32> = Vec::new();
+pub fn part_two() -> i32 {
+    let instructions_one = load_instructions(WIRE_ONE);
+    let instructions_two = load_instructions(WIRE_TWO);
 
-    for intersection in intersections {
-        let first_value = first.points.get(intersection).unwrap();
-        let first_steps = first_value.step_counter;
+    let mut wire_one = Wire::new();
+    let mut wire_two = Wire::new();
 
-        let second_value = second.points.get(intersection).unwrap();
-        let second_steps = second_value.step_counter;
-
-        let total_steps = *first_steps + *second_steps;
-        step_counts.push(total_steps);
+    for entry in instructions_one {
+        let instruction = parse_instruction(&entry);
+        wire_one.execute_instruction(&instruction);
     }
 
-    let mut minimum = step_counts[0];
+    for entry in instructions_two {
+        let instruction = parse_instruction(&entry);
+        wire_two.execute_instruction(&instruction);
+    }
 
-    for count in step_counts.iter().skip(1) {
-        if count < minimum {
-            count = minimum;
+    let candidates = wire_one.intersections(&wire_two);
+    let first_point = candidates.first().unwrap();
+    let first_wire_steps = wire_one.points.get(first_point).unwrap();
+    let second_wire_steps = wire_two.points.get(first_point).unwrap();
+    let mut total_steps = first_wire_steps + second_wire_steps;
+
+    for point in candidates.iter().skip(1) {
+        if *point == Point::origin() {
+            continue
+        }
+
+        let first_wire_steps = wire_one.points.get(point).unwrap();
+        let second_wire_steps = wire_two.points.get(point).unwrap();
+        let sum = first_wire_steps + second_wire_steps;
+        println!("sum: {}", sum);
+
+        if sum < total_steps {
+            total_steps = sum;
         }
     }
 
-    minimum
+    total_steps
 }
 
 // Point represents a point in the plane.
-#[derive(Clone, Copy, Debug, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Hash)]
 struct Point {
     x: i32,
     y: i32,
-    step_counter: i32,
 }
 
 impl Point {
@@ -103,7 +117,8 @@ impl Eq for Point {}
 // Wire represents the a wire, containing a Vec of all the points it traverses.
 struct Wire {
     current: Point,
-    points: HashMap<Point, bool>,
+    points: HashMap<Point, i32>,
+    step_counter: i32,
 }
 
 impl Wire {
@@ -111,21 +126,22 @@ impl Wire {
         let mut wire = Wire {
             current: Point::origin(),
             points: HashMap::new(),
+            step_counter: 0,
         };
 
         let origin = Point::origin();
 
-        wire.points.insert(origin, true);
+        wire.points.insert(origin, 0);
 
         wire
     }
 
     fn add_point(&mut self, point: Point) {
-        self.points.insert(point, true);
+        self.points.insert(point, self.step_counter);
     }
 
     fn execute_instruction(&mut self, instruction: &Instruction) {
-        self.current.step_counter += 1;
+        self.step_counter += 1;
 
         match instruction.direction {
             'L' => {
