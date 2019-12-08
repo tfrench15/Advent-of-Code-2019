@@ -1,12 +1,10 @@
 
-
-
 pub fn part_one(range: (i32, i32)) -> i32 {
     let mut counter = 0;
 
     for num in range.0..=range.1 {
         let num = num.to_string();
-        if is_double(&num) && is_increasing(&num) {
+        if has_double(&num) && is_increasing(&num) {
             counter += 1;
         }
     }
@@ -14,19 +12,43 @@ pub fn part_one(range: (i32, i32)) -> i32 {
     counter
 }
 
-fn is_double(num: &str) -> bool {
+pub fn part_two(range: (i32, i32)) -> i32 {
+    let mut counter = 0;
+
+    for num in range.0..=range.1 {
+        let num = num.to_string();
+        if has_double(&num) && is_increasing(&num) {
+            counter += 1;
+        }
+    }
+
+    counter
+}
+
+fn has_double(num: &str) -> bool {
     let slice: Vec<&str> = num
         .split("")
         .filter(|dig| *dig != "")
         .collect();
-    
-    for pair in slice.windows(2) {
-        if pair[0] == pair[1] {
-            return true
+
+    let mut digit_matches: Vec<i32> = Vec::new();
+
+    let mut in_a_row_count = 1;
+    let mut first = slice.first().unwrap();
+
+    for dig in slice.iter().skip(1) {
+        if dig == first {
+            in_a_row_count += 1;
+        } else {
+            digit_matches.push(in_a_row_count);
+            first = dig;
+            in_a_row_count = 1;
         }
     }
 
-    false
+    digit_matches.push(in_a_row_count);
+    
+    digit_matches.contains(&2)
 }
 
 fn is_increasing(num: &str) -> bool {
