@@ -35,6 +35,7 @@ pub fn part_one() -> i32 {
         }
 
         let man_dist = candidate.manhattan_distance();
+        println!("manhattan distance = {}", man_dist);
         if man_dist < minimum {
             minimum = man_dist;
         }
@@ -91,28 +92,27 @@ impl Wire {
     }
 
     fn execute_instruction(&mut self, instruction: &Instruction) {
-
         match instruction.direction {
             'L' => {
-                for _i in 0..=instruction.distance {
+                for _i in 0..instruction.distance {
                     self.current.x -= 1;
                     self.add_point(self.current);
                 }
             },
             'R' => {
-                for _i in 0..=instruction.distance {
+                for _i in 0..instruction.distance {
                     self.current.x += 1;
                     self.add_point(self.current);
                 }
             },
             'U' => {
-                for _i in 0..=instruction.distance {
+                for _i in 0..instruction.distance {
                     self.current.y += 1;
                     self.add_point(self.current);
                 }
             },
             'D' => {
-                for _i in 0..=instruction.distance {
+                for _i in 0..instruction.distance {
                     self.current.y -= 1;
                     self.add_point(self.current);
                 }
@@ -140,9 +140,7 @@ struct Instruction {
 }
 
 fn load_instructions(instruction_set: &str) -> Vec<String> {
-    let instructions = instruction_set.to_string();
-
-    instructions
+    instruction_set
         .split(',')
         .map(|s| s.to_string())
         .collect()
