@@ -27,15 +27,12 @@ pub fn part_one() -> i32 {
         .unwrap()
         .manhattan_distance();
 
-    println!("minimum {}", minimum);
-
     for candidate in candidates.iter().skip(1) {
         if *candidate == Point::origin() {
             continue
         }
 
         let man_dist = candidate.manhattan_distance();
-        println!("manhattan distance = {}", man_dist);
         if man_dist < minimum {
             minimum = man_dist;
         }
@@ -63,8 +60,10 @@ pub fn part_two() -> i32 {
 
     let candidates = wire_one.intersections(&wire_two);
     let first_point = candidates.first().unwrap();
+
     let first_wire_steps = wire_one.points.get(first_point).unwrap();
     let second_wire_steps = wire_two.points.get(first_point).unwrap();
+
     let mut total_steps = first_wire_steps + second_wire_steps;
 
     for point in candidates.iter().skip(1) {
@@ -75,7 +74,6 @@ pub fn part_two() -> i32 {
         let first_wire_steps = wire_one.points.get(point).unwrap();
         let second_wire_steps = wire_two.points.get(point).unwrap();
         let sum = first_wire_steps + second_wire_steps;
-        println!("sum: {}", sum);
 
         if sum < total_steps {
             total_steps = sum;
@@ -141,30 +139,33 @@ impl Wire {
     }
 
     fn execute_instruction(&mut self, instruction: &Instruction) {
-        self.step_counter += 1;
 
         match instruction.direction {
             'L' => {
                 for _i in 0..instruction.distance {
                     self.current.x -= 1;
+                    self.step_counter += 1;
                     self.add_point(self.current);
                 }
             },
             'R' => {
                 for _i in 0..instruction.distance {
                     self.current.x += 1;
+                    self.step_counter += 1;
                     self.add_point(self.current);
                 }
             },
             'U' => {
                 for _i in 0..instruction.distance {
                     self.current.y += 1;
+                    self.step_counter += 1;
                     self.add_point(self.current);
                 }
             },
             'D' => {
                 for _i in 0..instruction.distance {
                     self.current.y -= 1;
+                    self.step_counter += 1;
                     self.add_point(self.current);
                 }
             },
@@ -213,4 +214,5 @@ fn parse_instruction(instruction: &str) -> Instruction {
         distance,
     }
 }
+
 
