@@ -1,6 +1,6 @@
 mod opcode;
 
-use opcode::Opcode;
+use opcode::{Opcode, ParameterModes};
 
 pub struct Intcode {
     pub instructions: Vec<i32>,
@@ -8,7 +8,7 @@ pub struct Intcode {
 
 impl Intcode {
     pub fn new(instructions: Vec<i32>) -> Self {
-        Opcode { instructions }
+        Intcode { instructions }
     }
 
     fn run_program(&mut self, program_input: i32) {
@@ -39,7 +39,7 @@ impl Intcode {
         }
     }
 
-    fn parse_instruction(code: i32) -> Opcode {
+    fn parse_instruction(code: i32) -> (Opcode, Vec<ParameterModes>) {
         let code_str = code.to_string();
 
         let opcode = match code_str.get(code_str.len()-2..).unwrap() {
@@ -51,7 +51,18 @@ impl Intcode {
             _ => panic!("unknown opcode"),
         };
 
-        
+        let modes: Vec<ParameterModes> = code_str
+            .chars()
+            .rev()
+            .skip(2)
+            .map(|m| match m {
+                '0' => ParameterModes::Position,
+                '1' => ParameterModes::Immediate,
+                _ => panic!("unknown parameter mode"),
+            })
+            .collect();
+
+        (opcode, modes)
     }
 
     fn handle_opcode_1(&mut self, pos_1: usize, pos_2: usize, pos_3: usize) {
