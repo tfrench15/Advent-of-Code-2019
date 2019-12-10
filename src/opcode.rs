@@ -6,3 +6,8 @@ pub enum Opcode {
     Four,
     Break,
 }
+
+pub enum ParameterModes {
+    Position,
+    Immediate,
+}

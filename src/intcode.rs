@@ -39,14 +39,19 @@ impl Intcode {
         }
     }
 
-    fn parse_opcode(code: i32) {
+    fn parse_instruction(code: i32) -> Opcode {
         let code_str = code.to_string();
 
-        for ch in code_str.chars().rev() {
-            match ch {
+        let opcode = match code_str.get(code_str.len()-2..).unwrap() {
+            "01" => Opcode::One,
+            "02" => Opcode::Two,
+            "03" => Opcode::Three,
+            "04" => Opcode::Four,
+            "99" => Opcode::Break,
+            _ => panic!("unknown opcode"),
+        };
 
-            }
-        }
+        
     }
 
     fn handle_opcode_1(&mut self, pos_1: usize, pos_2: usize, pos_3: usize) {
