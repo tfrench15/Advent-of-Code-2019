@@ -1,3 +1,6 @@
+mod opcode;
+
+use opcode::Opcode;
 
 pub struct Intcode {
     pub instructions: Vec<i32>,
@@ -32,6 +35,16 @@ impl Intcode {
                 },
                 99 => break,
                 _ => panic!("unknown opcode!"),
+            }
+        }
+    }
+
+    fn parse_opcode(code: i32) {
+        let code_str = code.to_string();
+
+        for ch in code_str.chars().rev() {
+            match ch {
+
             }
         }
     }
